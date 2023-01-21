@@ -29,5 +29,5 @@ public class PersonDTO {
     //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate birthDate;
     @Valid
-    private Address mainAddress;
+    private AddressDTO mainAddress;
 }

@@ -27,8 +27,5 @@ public class AddressDTO {
     private Long number;
     @Max(50)
     @NotNull
-    private Long city;
-    @NotNull
-    @Valid
-    private Person person;
+    private String city;
 }

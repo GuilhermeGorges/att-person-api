@@ -33,7 +33,7 @@ public class Address {
     @Column(name = "number",nullable = false)
     private Long number;
     @Column(name = "city_name",nullable = false, length = 50)
-    private Long city;
+    private String city;
     @ManyToOne//(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "person_id", referencedColumnName = "id_person", nullable = false)
     private Person person;
