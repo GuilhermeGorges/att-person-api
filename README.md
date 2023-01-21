@@ -13,6 +13,7 @@
   
  ### Atributos
   - Nome
+  - CPF
   - Data de nascimento
   - Endereço:
     - Logradouro
