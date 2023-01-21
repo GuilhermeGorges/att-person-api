@@ -27,3 +27,4 @@
   - Java 11
   - Spring Framework 2.7.8
   - Maven
+  - Swagger UI
