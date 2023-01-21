@@ -24,5 +24,5 @@
   - Respostas da API são em JSON
   - Banco de dados H2
   - Java 11
-  - Spring Framework
+  - Spring Framework 2.7.8
   - Maven
