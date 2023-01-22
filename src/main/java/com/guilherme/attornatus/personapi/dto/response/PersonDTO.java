@@ -1,7 +1,5 @@
 package com.guilherme.attornatus.personapi.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.guilherme.attornatus.personapi.entity.Address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

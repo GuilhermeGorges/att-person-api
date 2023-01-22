@@ -1,12 +1,10 @@
 package com.guilherme.attornatus.personapi.dto.response;
 
-import com.guilherme.attornatus.personapi.entity.Person;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
