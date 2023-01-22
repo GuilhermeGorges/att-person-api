@@ -44,7 +44,7 @@ public class PersonControllerTest {
     }
 
     @Test
-    void whenGETListWithPeopleIsCalledThenOkStatusIsReturned() throws Exception {
+    void whenGETListWithPeopleIsCalledThenListOfPeopleIsReturned() throws Exception {
         //given
         PersonDTO personDTO = PersonDTOBuilder.builder().build().toPersonDTO();
 
@@ -53,7 +53,7 @@ public class PersonControllerTest {
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH)
-                .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name",is(personDTO.getName())))
                 .andExpect(jsonPath("$[0].birthDate",is(personDTO.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))))
@@ -63,7 +63,7 @@ public class PersonControllerTest {
     }
 
     @Test
-    void whenGETListWithoutPeopleIsCalledThenOkStatusIsReturned() throws Exception {
+    void whenGETListWithPeopleIsCalledThenOkStatusIsReturned() throws Exception {
         //given
         PersonDTO personDTO = PersonDTOBuilder.builder().build().toPersonDTO();
 
