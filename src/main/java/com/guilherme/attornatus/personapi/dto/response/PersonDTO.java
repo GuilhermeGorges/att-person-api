@@ -1,5 +1,6 @@
 package com.guilherme.attornatus.personapi.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +25,7 @@ public class PersonDTO {
     @NotNull
     private String CPF;
     @NotNull
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate birthDate;
     @Valid
     private AddressDTO mainAddress;
