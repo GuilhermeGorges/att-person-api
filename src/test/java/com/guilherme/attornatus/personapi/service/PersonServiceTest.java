@@ -1,8 +1,10 @@
 package com.guilherme.attornatus.personapi.service;
 
-import com.guilherme.attornatus.personapi.builder.response.PersonResDTOBuilder;
-import com.guilherme.attornatus.personapi.dto.response.PersonResDTO;
+import com.guilherme.attornatus.personapi.builder.PersonDTOBuilder;
+import com.guilherme.attornatus.personapi.dto.PersonDTO;
 import com.guilherme.attornatus.personapi.entity.Person;
+import com.guilherme.attornatus.personapi.exception.exceptions.AddressNotFoundException;
+import com.guilherme.attornatus.personapi.exception.exceptions.PersonAlreadyCreatedException;
 import com.guilherme.attornatus.personapi.exception.exceptions.PersonNotFoundException;
 import com.guilherme.attornatus.personapi.mapper.PersonMapper;
 import com.guilherme.attornatus.personapi.repository.PersonRepository;
@@ -32,19 +34,52 @@ public class PersonServiceTest {
     private PersonMapper personMapper = PersonMapper.INSTANCE;
 
     @Test
+    void whenPersonInformedThenItShouldBeCreated() throws PersonAlreadyCreatedException, AddressNotFoundException {
+        // given
+        PersonDTO expectedPersonDTO = PersonDTOBuilder.builder().build().toPersonDTO();
+        Person expectedSavedPerson = personMapper.toModel(expectedPersonDTO);
+
+        // when
+        when(personRepository.findByCPF(expectedPersonDTO.getCPF())).thenReturn(Optional.empty());
+        when(personRepository.save(expectedSavedPerson)).thenReturn(expectedSavedPerson);
+
+        //then
+        PersonDTO createdPersonDTO = personService.createPerson(expectedPersonDTO);
+
+        assertThat(createdPersonDTO.getId(), is(equalTo(expectedPersonDTO.getId())));
+        assertThat(createdPersonDTO.getName(), is(equalTo(expectedPersonDTO.getName())));
+        assertThat(createdPersonDTO.getCPF(), is(equalTo(expectedPersonDTO.getCPF())));
+        assertThat(createdPersonDTO.getMainAddress(), is(equalTo(expectedPersonDTO.getMainAddress())));
+        assertThat(createdPersonDTO.getBirthDate(), is(equalTo(expectedPersonDTO.getBirthDate())));
+    }
+
+    @Test
+    void whenAlreadyRegisteredPersonCPFThenAnExceptionShouldBeThrown() {
+        // given
+        PersonDTO expectedPersonDTO = PersonDTOBuilder.builder().build().toPersonDTO();
+        Person duplicatedPerson = personMapper.toModel(expectedPersonDTO);
+
+        // when
+        when(personRepository.findByCPF(expectedPersonDTO.getCPF())).thenReturn(Optional.of(duplicatedPerson));
+
+        // then
+        assertThrows(PersonAlreadyCreatedException.class, () -> personService.createPerson(expectedPersonDTO));
+    }
+
+    @Test
     void whenListOfPeopleIsCalledThenReturnListOfPeople() {
         //given
-        PersonResDTO expectedFoundPersonResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
-        Person expectedFoundPerson = personMapper.toModel(expectedFoundPersonResDTO);
+        PersonDTO expectedFoundPersonDTO = PersonDTOBuilder.builder().build().toPersonDTO();
+        Person expectedFoundPerson = personMapper.toModel(expectedFoundPersonDTO);
 
         //when
         when(personRepository.findAll()).thenReturn(Collections.singletonList(expectedFoundPerson));
 
         //then
-        List<PersonResDTO> foundListPersonResDTO = personService.getAllPeople();
+        List<PersonDTO> foundListPersonDTO = personService.getAllPeople();
 
-        assertThat(foundListPersonResDTO, is(not(empty())));
-        assertThat(foundListPersonResDTO.get(0), is(equalTo(expectedFoundPersonResDTO)));
+        assertThat(foundListPersonDTO, is(not(empty())));
+        assertThat(foundListPersonDTO.get(0), is(equalTo(expectedFoundPersonDTO)));
     }
 
     @Test
@@ -53,35 +88,35 @@ public class PersonServiceTest {
         when(personRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
 
         //then
-        List<PersonResDTO> foundListPersonResDTO = personService.getAllPeople();
+        List<PersonDTO> foundListPersonDTO = personService.getAllPeople();
 
-        assertThat(foundListPersonResDTO, is(empty()));
+        assertThat(foundListPersonDTO, is(empty()));
     }
 
     @Test
     void whenValidPersonIDIsGivenThenReturnAPerson() throws PersonNotFoundException {
         // given
-        PersonResDTO expectedFoundPersonResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
-        Person expectedFoundPerson = personMapper.toModel(expectedFoundPersonResDTO);
+        PersonDTO expectedFoundPersonDTO = PersonDTOBuilder.builder().build().toPersonDTO();
+        Person expectedFoundPerson = personMapper.toModel(expectedFoundPersonDTO);
 
         // when
         when(personRepository.findById(expectedFoundPerson.getId())).thenReturn(Optional.of(expectedFoundPerson));
 
         // then
-        PersonResDTO foundPersonResDTO = personService.getPersonByID(expectedFoundPersonResDTO.getId());
+        PersonDTO foundPersonDTO = personService.getPersonByID(expectedFoundPersonDTO.getId());
 
-        assertThat(foundPersonResDTO, is(equalTo(expectedFoundPersonResDTO)));
+        assertThat(foundPersonDTO, is(equalTo(expectedFoundPersonDTO)));
     }
 
     @Test
     void whenNotRegisteredPersonIdIsGivenThenThrowAnException() {
         // given
-        PersonResDTO expectedFoundPersonResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
+        PersonDTO expectedFoundPersonDTO = PersonDTOBuilder.builder().build().toPersonDTO();
 
         // when
-        when(personRepository.findById(expectedFoundPersonResDTO.getId())).thenReturn(Optional.empty());
+        when(personRepository.findById(expectedFoundPersonDTO.getId())).thenReturn(Optional.empty());
 
         // then
-        assertThrows(PersonNotFoundException.class, () -> personService.getPersonByID(expectedFoundPersonResDTO.getId()));
+        assertThrows(PersonNotFoundException.class, () -> personService.getPersonByID(expectedFoundPersonDTO.getId()));
     }
 }

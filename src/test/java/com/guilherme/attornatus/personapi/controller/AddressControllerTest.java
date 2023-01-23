@@ -1,7 +1,7 @@
 package com.guilherme.attornatus.personapi.controller;
 
-import com.guilherme.attornatus.personapi.builder.response.AddressResDTOBuilder;
-import com.guilherme.attornatus.personapi.dto.response.AddressResDTO;
+import com.guilherme.attornatus.personapi.builder.AddressDTOBuilder;
+import com.guilherme.attornatus.personapi.dto.AddressDTO;
 import com.guilherme.attornatus.personapi.service.AddressService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,31 +46,31 @@ public class AddressControllerTest {
     @Test
     void whenGETListIsCalledWithValidPeopleIDThenListAddressesReturned() throws Exception {
         // given
-        AddressResDTO addressResDTO = AddressResDTOBuilder.builder().build().toAddressResDTO();
+        AddressDTO addressDTO = AddressDTOBuilder.builder().build().toAddressDTO();
 
         //when
         when(addressService.getAddressesByPersonId(VALID_PERSON_ID))
-                .thenReturn(Collections.singletonList(addressResDTO));
+                .thenReturn(Collections.singletonList(addressDTO));
 
         // then
         mockMvc.perform(MockMvcRequestBuilders.get(ADDRESS_API_URL_PATH + "/" + VALID_PERSON_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(addressResDTO.getId().intValue())))
-                .andExpect(jsonPath("$[0].cep", is(addressResDTO.getCEP())))
-                .andExpect(jsonPath("$[0].city", is(addressResDTO.getCity())))
-                .andExpect(jsonPath("$[0].logradouro", is(addressResDTO.getLogradouro())))
-                .andExpect(jsonPath("$[0].number", is(addressResDTO.getNumber().intValue())));
+                .andExpect(jsonPath("$[0].id", is(addressDTO.getId().intValue())))
+                .andExpect(jsonPath("$[0].cep", is(addressDTO.getCEP())))
+                .andExpect(jsonPath("$[0].city", is(addressDTO.getCity())))
+                .andExpect(jsonPath("$[0].logradouro", is(addressDTO.getLogradouro())))
+                .andExpect(jsonPath("$[0].number", is(addressDTO.getNumber().intValue())));
     }
 
     @Test
     void whenGETListWithValidPeopleIDIsCalledThenOkStatusIsReturned() throws Exception {
         //given
-        AddressResDTO addressResDTO = AddressResDTOBuilder.builder().build().toAddressResDTO();
+        AddressDTO addressDTO = AddressDTOBuilder.builder().build().toAddressDTO();
 
         //when
         when(addressService.getAddressesByPersonId(VALID_PERSON_ID))
-                .thenReturn(Collections.singletonList(addressResDTO));
+                .thenReturn(Collections.singletonList(addressDTO));
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.get(ADDRESS_API_URL_PATH + "/" + VALID_PERSON_ID)

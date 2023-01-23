@@ -27,7 +27,6 @@ public class Person {
     @CPF
     @Column(name = "cpf", nullable = false, unique = true)
     private String CPF;
-    @OneToOne
-    @JoinColumn(name = "address_id", referencedColumnName = "id_address")
-    private Address mainAddress;
+    @Column(name = "address_id")
+    private Long mainAddress;
 }

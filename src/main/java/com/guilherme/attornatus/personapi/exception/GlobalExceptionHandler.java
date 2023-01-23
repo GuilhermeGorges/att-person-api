@@ -1,6 +1,6 @@
 package com.guilherme.attornatus.personapi.exception;
 
-import com.guilherme.attornatus.personapi.dto.exception.ExceptionDTO;
+import com.guilherme.attornatus.personapi.exception.exceptions.PersonAlreadyCreatedException;
 import com.guilherme.attornatus.personapi.exception.exceptions.PersonNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +10,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(PersonNotFoundException.class)
-    public ResponseEntity<ExceptionDTO> transferenceNotFoundException(PersonNotFoundException e){
+    public ResponseEntity<ExceptionBuilder> personNotFoundException(PersonNotFoundException e){
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ExceptionDTO(HttpStatus.NOT_FOUND, e.getMessage())
+                new ExceptionBuilder(HttpStatus.NOT_FOUND, e.getMessage())
+        );
+    }
+
+    @ExceptionHandler(PersonAlreadyCreatedException.class)
+    public ResponseEntity<ExceptionBuilder> personAlreadyCreatedException(PersonAlreadyCreatedException e){
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ExceptionBuilder(HttpStatus.BAD_REQUEST, e.getMessage())
         );
     }
 }

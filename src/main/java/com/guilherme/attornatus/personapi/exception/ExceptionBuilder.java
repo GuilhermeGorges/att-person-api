@@ -1,4 +1,4 @@
-package com.guilherme.attornatus.personapi.dto.exception;
+package com.guilherme.attornatus.personapi.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExceptionDTO {
+public class ExceptionBuilder {
     HttpStatus StatusCode;
     String message;
 }

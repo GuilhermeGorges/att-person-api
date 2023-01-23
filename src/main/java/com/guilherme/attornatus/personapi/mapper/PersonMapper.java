@@ -1,6 +1,6 @@
 package com.guilherme.attornatus.personapi.mapper;
 
-import com.guilherme.attornatus.personapi.dto.response.PersonResDTO;
+import com.guilherme.attornatus.personapi.dto.PersonDTO;
 import com.guilherme.attornatus.personapi.entity.Person;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -10,7 +10,7 @@ public interface PersonMapper {
 
     PersonMapper INSTANCE = Mappers.getMapper(PersonMapper.class);
 
-    Person toModel(PersonResDTO personDTO);
+    Person toModel(PersonDTO personDTO);
 
-    PersonResDTO toDTO(Person person);
+    PersonDTO toDTO(Person person);
 }

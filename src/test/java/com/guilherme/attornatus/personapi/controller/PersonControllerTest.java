@@ -1,7 +1,7 @@
 package com.guilherme.attornatus.personapi.controller;
 
-import com.guilherme.attornatus.personapi.builder.response.PersonResDTOBuilder;
-import com.guilherme.attornatus.personapi.dto.response.PersonResDTO;
+import com.guilherme.attornatus.personapi.builder.PersonDTOBuilder;
+import com.guilherme.attornatus.personapi.dto.PersonDTO;
 import com.guilherme.attornatus.personapi.exception.exceptions.PersonNotFoundException;
 import com.guilherme.attornatus.personapi.service.PersonService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,11 +17,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.List;
 
+import static com.guilherme.attornatus.personapi.utils.JsonConversionUtils.asJsonString;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PersonControllerTest {
 
     private static final String PERSON_API_URL_PATH = "/api/v1/person";
+    private static final List DATE_VALIDATION = List.of(2022,9,9);
 
     private MockMvc mockMvc;
     @Mock
@@ -44,32 +47,52 @@ public class PersonControllerTest {
                 .build();
     }
 
+
+    @Test
+    void whenPOSTIsCalledThenABeerIsCreated() throws Exception {
+        // given
+        PersonDTO personDTO = PersonDTOBuilder.builder().build().toPersonDTO();
+
+        // when
+        when(personService.createPerson(personDTO)).thenReturn(personDTO);
+
+        // then
+        mockMvc.perform(post(PERSON_API_URL_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(personDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name", is(personDTO.getName())))
+                .andExpect(jsonPath("$.birthDate", is(DATE_VALIDATION)))
+                .andExpect(jsonPath("$.cpf", is(personDTO.getCPF())))
+                .andExpect(jsonPath("$.mainAddress", is(personDTO.getMainAddress())));
+    }
+
     @Test
     void whenGETListWithPeopleIsCalledThenListOfPeopleIsReturned() throws Exception {
         //given
-        PersonResDTO personResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
+        PersonDTO personDTO = PersonDTOBuilder.builder().build().toPersonDTO();
 
         //when
-        when(personService.getAllPeople()).thenReturn(Collections.singletonList(personResDTO));
+        when(personService.getAllPeople()).thenReturn(Collections.singletonList(personDTO));
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH)
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name",is(personResDTO.getName())))
-                .andExpect(jsonPath("$[0].birthDate",is(personResDTO.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))))
-                .andExpect(jsonPath("$[0].cpf",is(personResDTO.getCPF())))
-                .andExpect(jsonPath("$[0].mainAddress",is(personResDTO.getMainAddress())));
+                .andExpect(jsonPath("$[0].name",is(personDTO.getName())))
+                .andExpect(jsonPath("$[0].birthDate",is(DATE_VALIDATION)))
+                .andExpect(jsonPath("$[0].cpf",is(personDTO.getCPF())))
+                .andExpect(jsonPath("$[0].mainAddress",is(personDTO.getMainAddress())));
 
     }
 
     @Test
     void whenGETListWithPeopleIsCalledThenOkStatusIsReturned() throws Exception {
         //given
-        PersonResDTO personResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
+        PersonDTO personDTO = PersonDTOBuilder.builder().build().toPersonDTO();
 
         //when
-        when(personService.getAllPeople()).thenReturn(Collections.singletonList(personResDTO));
+        when(personService.getAllPeople()).thenReturn(Collections.singletonList(personDTO));
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH)
@@ -78,34 +101,34 @@ public class PersonControllerTest {
     }
 
     @Test
-    void whenGETIsCalledWithValidPersonIDThenOkStatusIsReturned() throws Exception, PersonNotFoundException {
+    void whenGETIsCalledWithValidPersonIDThenOkStatusIsReturned() throws Exception {
         // given
-        PersonResDTO personResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
+        PersonDTO personDTO = PersonDTOBuilder.builder().build().toPersonDTO();
 
         //when
-        when(personService.getPersonByID(personResDTO.getId())).thenReturn(personResDTO);
+        when(personService.getPersonByID(personDTO.getId())).thenReturn(personDTO);
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH + "/" + personResDTO.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH + "/" + personDTO.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name",is(personResDTO.getName())))
-                .andExpect(jsonPath("$.birthDate",is(personResDTO.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))))
-                .andExpect(jsonPath("$.cpf",is(personResDTO.getCPF())))
-                .andExpect(jsonPath("$.mainAddress",is(personResDTO.getMainAddress())));
+                .andExpect(jsonPath("$.name",is(personDTO.getName())))
+                .andExpect(jsonPath("$.birthDate",is(DATE_VALIDATION)))
+                .andExpect(jsonPath("$.cpf",is(personDTO.getCPF())))
+                .andExpect(jsonPath("$.mainAddress",is(personDTO.getMainAddress())));
     }
 
     @Test
-    void whenGETIsCalledWithRegisteredPersonIDThenOkStatusIsReturned() throws Exception, PersonNotFoundException {
+    void whenGETIsCalledWithRegisteredPersonIDThenOkStatusIsReturned() throws Exception {
         // given
-        PersonResDTO personResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
+        PersonDTO personDTO = PersonDTOBuilder.builder().build().toPersonDTO();
 
         //when
-        when(personService.getPersonByID(personResDTO.getId()))
-                .thenReturn(personResDTO);
+        when(personService.getPersonByID(personDTO.getId()))
+                .thenReturn(personDTO);
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH + "/" + personResDTO.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH + "/" + personDTO.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -113,13 +136,13 @@ public class PersonControllerTest {
     @Test
     void whenGETIsCalledWithoutRegisteredPersonIDThenNotFoundStatusIsReturned() throws Exception {
         // given
-        PersonResDTO personResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
+        PersonDTO personDTO = PersonDTOBuilder.builder().build().toPersonDTO();
 
         //when
-        when(personService.getPersonByID(personResDTO.getId())).thenThrow(PersonNotFoundException.class);
+        when(personService.getPersonByID(personDTO.getId())).thenThrow(PersonNotFoundException.class);
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH + "/" + personResDTO.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH + "/" + personDTO.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }

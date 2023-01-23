@@ -1,6 +1,10 @@
 package com.guilherme.attornatus.personapi.service.impl;
 
-import com.guilherme.attornatus.personapi.dto.response.AddressResDTO;
+import com.guilherme.attornatus.personapi.dto.AddressDTO;
+import com.guilherme.attornatus.personapi.dto.PersonDTO;
+import com.guilherme.attornatus.personapi.entity.Address;
+import com.guilherme.attornatus.personapi.exception.exceptions.AddressNotFoundException;
+import com.guilherme.attornatus.personapi.exception.exceptions.PersonAlreadyCreatedException;
 import com.guilherme.attornatus.personapi.mapper.AddressMapper;
 import com.guilherme.attornatus.personapi.repository.AddressRepository;
 import com.guilherme.attornatus.personapi.service.AddressService;
@@ -21,9 +25,14 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AddressResDTO> getAddressesByPersonId(final Long personId) {
+    public List<AddressDTO> getAddressesByPersonId(final Long personId) {
         return addressRepository.findAllByPersonId(personId).stream()
                 .map(addressMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    protected void verifyIfAddressAlreadyExists(Long id) throws AddressNotFoundException {
+        addressRepository.findById(id)
+                .orElseThrow(() -> new AddressNotFoundException(id));
     }
 }

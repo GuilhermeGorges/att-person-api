@@ -1,7 +1,7 @@
 package com.guilherme.attornatus.personapi.service;
 
-import com.guilherme.attornatus.personapi.builder.response.AddressResDTOBuilder;
-import com.guilherme.attornatus.personapi.dto.response.AddressResDTO;
+import com.guilherme.attornatus.personapi.builder.AddressDTOBuilder;
+import com.guilherme.attornatus.personapi.dto.AddressDTO;
 import com.guilherme.attornatus.personapi.entity.Address;
 import com.guilherme.attornatus.personapi.mapper.AddressMapper;
 import com.guilherme.attornatus.personapi.repository.AddressRepository;
@@ -31,18 +31,18 @@ public class AddressServiceTest {
     @Test
     void whenListOfAddressesIsCalledThenReturnListOfAddresses() {
         //given
-        AddressResDTO expectedFoundAddressResDTO = AddressResDTOBuilder.builder().build().toAddressResDTO();
-        Address expectedFoundAddress = addressMapper.toModel(expectedFoundAddressResDTO);
+        AddressDTO expectedFoundAddressDTO = AddressDTOBuilder.builder().build().toAddressDTO();
+        Address expectedFoundAddress = addressMapper.toModel(expectedFoundAddressDTO);
 
         //when
         when(addressRepository.findAllByPersonId(VALID_PERSON_ID))
                 .thenReturn(Collections.singletonList(expectedFoundAddress));
 
         //then
-        List<AddressResDTO> foundListAddressResDTO = addressService.getAddressesByPersonId(VALID_PERSON_ID);
+        List<AddressDTO> foundListAddressDTO = addressService.getAddressesByPersonId(VALID_PERSON_ID);
 
-        assertThat(foundListAddressResDTO, is(not(empty())));
-        assertThat(foundListAddressResDTO.get(0), is(equalTo(expectedFoundAddressResDTO)));
+        assertThat(foundListAddressDTO, is(not(empty())));
+        assertThat(foundListAddressDTO.get(0), is(equalTo(expectedFoundAddressDTO)));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class AddressServiceTest {
         when(addressRepository.findAllByPersonId(VALID_PERSON_ID)).thenReturn(Collections.EMPTY_LIST);
 
         //then
-        List<AddressResDTO> foundListAddressDTO = addressService.getAddressesByPersonId(VALID_PERSON_ID);
+        List<AddressDTO> foundListAddressDTO = addressService.getAddressesByPersonId(VALID_PERSON_ID);
 
         assertThat(foundListAddressDTO, is(empty()));
 
