@@ -1,6 +1,6 @@
 package com.guilherme.attornatus.personapi.controller;
 
-import com.guilherme.attornatus.personapi.dto.response.AddressDTO;
+import com.guilherme.attornatus.personapi.dto.response.AddressResDTO;
 import com.guilherme.attornatus.personapi.service.AddressService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +21,7 @@ public class AddressController {
 
     @Operation(summary = "Get Addresses By Person ID")
     @GetMapping(value = "/{personId}")
-    public ResponseEntity<List<AddressDTO>> getAddressesByPersonId(@PathVariable final Long personId) {
+    public ResponseEntity<List<AddressResDTO>> getAddressesByPersonId(@PathVariable final Long personId) {
         return ResponseEntity.ok(addressService.getAddressesByPersonId(personId));
     }
 }

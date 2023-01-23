@@ -1,10 +1,10 @@
 package com.guilherme.attornatus.personapi.builder.response;
 
-import com.guilherme.attornatus.personapi.dto.response.AddressDTO;
+import com.guilherme.attornatus.personapi.dto.response.AddressResDTO;
 import lombok.Builder;
 
 @Builder
-public class AddressDTOBuilder {
+public class AddressResDTOBuilder {
     @Builder.Default
     private Long id = 1L;
     @Builder.Default
@@ -16,8 +16,8 @@ public class AddressDTOBuilder {
     @Builder.Default
     private String city = "Blumenau - SC";
 
-    public AddressDTO toAddressDTO() {
-        return new AddressDTO(id,
+    public AddressResDTO toAddressResDTO() {
+        return new AddressResDTO(id,
                 logradouro,
                 CEP,
                 number,

@@ -1,13 +1,13 @@
 package com.guilherme.attornatus.personapi.builder.response;
 
 import lombok.Builder;
-import com.guilherme.attornatus.personapi.dto.response.AddressDTO;
-import com.guilherme.attornatus.personapi.dto.response.PersonDTO;
+import com.guilherme.attornatus.personapi.dto.response.AddressResDTO;
+import com.guilherme.attornatus.personapi.dto.response.PersonResDTO;
 
 import java.time.LocalDate;
 
 @Builder
-public class PersonDTOBuilder {
+public class PersonResDTOBuilder {
     @Builder.Default
     private Long id = 1L;
     @Builder.Default
@@ -17,10 +17,10 @@ public class PersonDTOBuilder {
     @Builder.Default
     private LocalDate birthDate = LocalDate.parse("2022-09-09");
     @Builder.Default
-    private AddressDTO mainAddress = null;
+    private AddressResDTO mainAddress = null;
 
-    public PersonDTO toPersonDTO() {
-        return new PersonDTO(id,
+    public PersonResDTO toPersonResDTO() {
+        return new PersonResDTO(id,
                 name,
                 CPF,
                 birthDate,

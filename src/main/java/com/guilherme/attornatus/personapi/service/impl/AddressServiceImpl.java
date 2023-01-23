@@ -1,6 +1,6 @@
 package com.guilherme.attornatus.personapi.service.impl;
 
-import com.guilherme.attornatus.personapi.dto.response.AddressDTO;
+import com.guilherme.attornatus.personapi.dto.response.AddressResDTO;
 import com.guilherme.attornatus.personapi.mapper.AddressMapper;
 import com.guilherme.attornatus.personapi.repository.AddressRepository;
 import com.guilherme.attornatus.personapi.service.AddressService;
@@ -21,7 +21,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AddressDTO> getAddressesByPersonId(final Long personId) {
+    public List<AddressResDTO> getAddressesByPersonId(final Long personId) {
         return addressRepository.findAllByPersonId(personId).stream()
                 .map(addressMapper::toDTO)
                 .collect(Collectors.toList());

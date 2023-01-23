@@ -1,7 +1,8 @@
 package com.guilherme.attornatus.personapi.controller;
 
-import com.guilherme.attornatus.personapi.builder.response.PersonDTOBuilder;
-import com.guilherme.attornatus.personapi.dto.response.PersonDTO;
+import com.guilherme.attornatus.personapi.builder.response.PersonResDTOBuilder;
+import com.guilherme.attornatus.personapi.dto.response.PersonResDTO;
+import com.guilherme.attornatus.personapi.exception.exceptions.PersonNotFoundException;
 import com.guilherme.attornatus.personapi.service.PersonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,33 +47,80 @@ public class PersonControllerTest {
     @Test
     void whenGETListWithPeopleIsCalledThenListOfPeopleIsReturned() throws Exception {
         //given
-        PersonDTO personDTO = PersonDTOBuilder.builder().build().toPersonDTO();
+        PersonResDTO personResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
 
         //when
-        when(personService.getAllPeople()).thenReturn(Collections.singletonList(personDTO));
+        when(personService.getAllPeople()).thenReturn(Collections.singletonList(personResDTO));
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH)
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name",is(personDTO.getName())))
-                .andExpect(jsonPath("$[0].birthDate",is(personDTO.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))))
-                .andExpect(jsonPath("$[0].cpf",is(personDTO.getCPF())))
-                .andExpect(jsonPath("$[0].mainAddress",is(personDTO.getMainAddress())));
+                .andExpect(jsonPath("$[0].name",is(personResDTO.getName())))
+                .andExpect(jsonPath("$[0].birthDate",is(personResDTO.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))))
+                .andExpect(jsonPath("$[0].cpf",is(personResDTO.getCPF())))
+                .andExpect(jsonPath("$[0].mainAddress",is(personResDTO.getMainAddress())));
 
     }
 
     @Test
     void whenGETListWithPeopleIsCalledThenOkStatusIsReturned() throws Exception {
         //given
-        PersonDTO personDTO = PersonDTOBuilder.builder().build().toPersonDTO();
+        PersonResDTO personResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
 
         //when
-        when(personService.getAllPeople()).thenReturn(Collections.singletonList(personDTO));
+        when(personService.getAllPeople()).thenReturn(Collections.singletonList(personResDTO));
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void whenGETIsCalledWithValidPersonIDThenOkStatusIsReturned() throws Exception, PersonNotFoundException {
+        // given
+        PersonResDTO personResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
+
+        //when
+        when(personService.getPersonByID(personResDTO.getId())).thenReturn(personResDTO);
+
+        // then
+        mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH + "/" + personResDTO.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name",is(personResDTO.getName())))
+                .andExpect(jsonPath("$.birthDate",is(personResDTO.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))))
+                .andExpect(jsonPath("$.cpf",is(personResDTO.getCPF())))
+                .andExpect(jsonPath("$.mainAddress",is(personResDTO.getMainAddress())));
+    }
+
+    @Test
+    void whenGETIsCalledWithRegisteredPersonIDThenOkStatusIsReturned() throws Exception, PersonNotFoundException {
+        // given
+        PersonResDTO personResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
+
+        //when
+        when(personService.getPersonByID(personResDTO.getId()))
+                .thenReturn(personResDTO);
+
+        // then
+        mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH + "/" + personResDTO.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void whenGETIsCalledWithoutRegisteredPersonIDThenNotFoundStatusIsReturned() throws Exception {
+        // given
+        PersonResDTO personResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
+
+        //when
+        when(personService.getPersonByID(personResDTO.getId())).thenThrow(PersonNotFoundException.class);
+
+        // then
+        mockMvc.perform(MockMvcRequestBuilders.get(PERSON_API_URL_PATH + "/" + personResDTO.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddressDTO {
+public class AddressResDTO {
     @NotNull
     private Long id;
     @Max(250)

@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonDTO {
+public class PersonResDTO {
     @NotNull
     private Long id;
     @Max(200)
@@ -28,5 +28,5 @@ public class PersonDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate birthDate;
     @Valid
-    private AddressDTO mainAddress;
+    private AddressResDTO mainAddress;
 }

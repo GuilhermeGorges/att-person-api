@@ -1,8 +1,9 @@
 package com.guilherme.attornatus.personapi.service;
 
-import com.guilherme.attornatus.personapi.builder.response.PersonDTOBuilder;
-import com.guilherme.attornatus.personapi.dto.response.PersonDTO;
+import com.guilherme.attornatus.personapi.builder.response.PersonResDTOBuilder;
+import com.guilherme.attornatus.personapi.dto.response.PersonResDTO;
 import com.guilherme.attornatus.personapi.entity.Person;
+import com.guilherme.attornatus.personapi.exception.exceptions.PersonNotFoundException;
 import com.guilherme.attornatus.personapi.mapper.PersonMapper;
 import com.guilherme.attornatus.personapi.repository.PersonRepository;
 import com.guilherme.attornatus.personapi.service.impl.PersonServiceImpl;
@@ -14,8 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import static org.hamcrest.Matchers.*;
@@ -31,17 +34,17 @@ public class PersonServiceTest {
     @Test
     void whenListOfPeopleIsCalledThenReturnListOfPeople() {
         //given
-        PersonDTO expectedFoundPersonDTO = PersonDTOBuilder.builder().build().toPersonDTO();
-        Person expectedFoundPerson = personMapper.toModel(expectedFoundPersonDTO);
+        PersonResDTO expectedFoundPersonResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
+        Person expectedFoundPerson = personMapper.toModel(expectedFoundPersonResDTO);
 
         //when
         when(personRepository.findAll()).thenReturn(Collections.singletonList(expectedFoundPerson));
 
         //then
-        List<PersonDTO> foundListPersonDTO = personService.getAllPeople();
+        List<PersonResDTO> foundListPersonResDTO = personService.getAllPeople();
 
-        assertThat(foundListPersonDTO, is(not(empty())));
-        assertThat(foundListPersonDTO.get(0), is(equalTo(expectedFoundPersonDTO)));
+        assertThat(foundListPersonResDTO, is(not(empty())));
+        assertThat(foundListPersonResDTO.get(0), is(equalTo(expectedFoundPersonResDTO)));
     }
 
     @Test
@@ -50,10 +53,35 @@ public class PersonServiceTest {
         when(personRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
 
         //then
-        List<PersonDTO> foundListPersonDTO = personService.getAllPeople();
+        List<PersonResDTO> foundListPersonResDTO = personService.getAllPeople();
 
-        assertThat(foundListPersonDTO, is(empty()));
-
+        assertThat(foundListPersonResDTO, is(empty()));
     }
 
+    @Test
+    void whenValidPersonIDIsGivenThenReturnAPerson() throws PersonNotFoundException {
+        // given
+        PersonResDTO expectedFoundPersonResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
+        Person expectedFoundPerson = personMapper.toModel(expectedFoundPersonResDTO);
+
+        // when
+        when(personRepository.findById(expectedFoundPerson.getId())).thenReturn(Optional.of(expectedFoundPerson));
+
+        // then
+        PersonResDTO foundPersonResDTO = personService.getPersonByID(expectedFoundPersonResDTO.getId());
+
+        assertThat(foundPersonResDTO, is(equalTo(expectedFoundPersonResDTO)));
+    }
+
+    @Test
+    void whenNotRegisteredPersonIdIsGivenThenThrowAnException() {
+        // given
+        PersonResDTO expectedFoundPersonResDTO = PersonResDTOBuilder.builder().build().toPersonResDTO();
+
+        // when
+        when(personRepository.findById(expectedFoundPersonResDTO.getId())).thenReturn(Optional.empty());
+
+        // then
+        assertThrows(PersonNotFoundException.class, () -> personService.getPersonByID(expectedFoundPersonResDTO.getId()));
+    }
 }
