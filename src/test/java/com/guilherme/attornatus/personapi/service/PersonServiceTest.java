@@ -31,9 +31,6 @@ import static org.hamcrest.Matchers.*;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class PersonServiceTest {
-    private static final String ALTERNATIVE_PERSON_NAME = "Eleanor Mendonça";
-    private static final String ALTERNATIVE_CPF = "641.822.710-76";
-
     @Mock
     private PersonRepository personRepository;
     @InjectMocks
