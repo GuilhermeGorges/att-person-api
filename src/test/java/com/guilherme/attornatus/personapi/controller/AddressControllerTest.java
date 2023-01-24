@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class AddressControllerTest {
     private static final long VALID_PERSON_ID = 1L;
-
     private static final String ADDRESS_API_URL_PATH = "/api/v1/address";
 
     private MockMvc mockMvc;

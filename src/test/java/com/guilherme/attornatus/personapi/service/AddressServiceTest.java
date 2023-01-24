@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class AddressServiceTest {
     private static final Long VALID_PERSON_ID = 1L;
+
     @Mock
     private AddressRepository addressRepository;
     @InjectMocks
