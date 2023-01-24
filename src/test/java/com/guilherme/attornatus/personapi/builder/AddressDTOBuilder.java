@@ -24,7 +24,7 @@ public class AddressDTOBuilder {
             "Larissa Abraão",
             LocalDate.of(2022,9,9),
             "03171313030",
-            null);
+            1L);
 
     public AddressDTO toAddressDTO() {
         return new AddressDTO(id,

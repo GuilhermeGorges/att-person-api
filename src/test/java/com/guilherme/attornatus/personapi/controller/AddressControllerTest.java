@@ -18,8 +18,10 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import java.util.Collections;
 
+import static com.guilherme.attornatus.personapi.utils.JsonConversionUtils.asJsonString;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,6 +43,27 @@ public class AddressControllerTest {
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .setViewResolvers((s, locale) -> new MappingJackson2JsonView())
                 .build();
+    }
+
+    @Test
+    void whenPOSTIsCalledThenAnAddressIsCreated() throws Exception {
+        // given
+        AddressDTO addressDTO = AddressDTOBuilder.builder().build().toAddressDTO();
+
+        //when
+        when(addressService.createAddress(addressDTO))
+                .thenReturn(addressDTO);
+
+        // then
+        mockMvc.perform(post(ADDRESS_API_URL_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(addressDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", is(addressDTO.getId().intValue())))
+                .andExpect(jsonPath("$.cep", is(addressDTO.getCEP())))
+                .andExpect(jsonPath("$.city", is(addressDTO.getCity())))
+                .andExpect(jsonPath("$.logradouro", is(addressDTO.getLogradouro())))
+                .andExpect(jsonPath("$.number", is(addressDTO.getNumber().intValue())));
     }
 
     @Test

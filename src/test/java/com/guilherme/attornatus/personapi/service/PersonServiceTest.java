@@ -14,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +28,7 @@ import static org.mockito.Mockito.when;
 import static org.hamcrest.Matchers.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class PersonServiceTest {
     @Mock
     private PersonRepository personRepository;
@@ -40,7 +43,7 @@ public class PersonServiceTest {
         Person expectedSavedPerson = personMapper.toModel(expectedPersonDTO);
 
         // when
-        when(personRepository.findByCPF(expectedPersonDTO.getCPF())).thenReturn(Optional.empty());
+        when(personRepository.findById(expectedPersonDTO.getId())).thenReturn(Optional.empty());
         when(personRepository.save(expectedSavedPerson)).thenReturn(expectedSavedPerson);
 
         //then

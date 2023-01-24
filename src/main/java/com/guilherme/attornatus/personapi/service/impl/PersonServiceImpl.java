@@ -6,6 +6,7 @@ import com.guilherme.attornatus.personapi.exception.exceptions.AddressNotFoundEx
 import com.guilherme.attornatus.personapi.exception.exceptions.PersonAlreadyCreatedException;
 import com.guilherme.attornatus.personapi.exception.exceptions.PersonNotFoundException;
 import com.guilherme.attornatus.personapi.mapper.PersonMapper;
+import com.guilherme.attornatus.personapi.repository.AddressRepository;
 import com.guilherme.attornatus.personapi.repository.PersonRepository;
 import com.guilherme.attornatus.personapi.service.PersonService;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 public class PersonServiceImpl implements PersonService {
 
     private PersonRepository personRepository;
-    private AddressServiceImpl addressServiceImpl;
+    private AddressRepository addressRepository;
     private final PersonMapper personMapper = PersonMapper.INSTANCE;
 
     @Override
@@ -41,9 +42,13 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonDTO createPerson(PersonDTO personDTO) throws PersonAlreadyCreatedException, AddressNotFoundException {
-        verifyIfPersonAlreadyExists(formatData(personDTO.getCPF()));
-        if (personDTO.getMainAddress() != null) {
-            addressServiceImpl.verifyIfAddressAlreadyExists(personDTO.getMainAddress());
+        personDTO.setCPF(OperationServer.formatData(personDTO.getCPF()));
+        verifyIfPersonAlreadyExists(personDTO.getCPF());
+        Long mainAddressId = personDTO.getMainAddress();
+        if (mainAddressId != null) {
+            if (addressRepository.findById(mainAddressId).isEmpty()){
+                throw new AddressNotFoundException(mainAddressId);
+            }
         }
         Person person = personMapper.toModel(personDTO);
         Person savedPerson = personRepository.save(person);
@@ -51,13 +56,10 @@ public class PersonServiceImpl implements PersonService {
     }
 
     private void verifyIfPersonAlreadyExists(String personCPF) throws PersonAlreadyCreatedException {
-        Optional<Person> optSavedBeer = personRepository.findByCPF(personCPF);
-        if (optSavedBeer.isPresent()) {
+        Optional<Person> optionalPerson = personRepository.findByCPF(personCPF);
+        if (optionalPerson.isPresent()) {
             throw new PersonAlreadyCreatedException(personCPF);
         }
     }
 
-    private static String formatData(String data){
-        return data.replaceAll("[^0-9]+", "");
-    }
 }

@@ -49,7 +49,7 @@ public class PersonControllerTest {
     }
 
     @Test
-    void whenPOSTIsCalledThenABeerIsCreated() throws Exception {
+    void whenPOSTIsCalledThenAPersonIsCreated() throws Exception {
         // given
         PersonDTO personDTO = PersonDTOBuilder.builder().build().toPersonDTO();
 

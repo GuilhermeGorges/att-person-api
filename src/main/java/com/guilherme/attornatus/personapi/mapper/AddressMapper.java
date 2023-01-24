@@ -12,5 +12,4 @@ public interface AddressMapper {
     Address toModel(AddressDTO addressDTO);
 
     AddressDTO toDTO(Address address);
-
 }

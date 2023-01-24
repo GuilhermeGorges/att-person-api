@@ -27,6 +27,13 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
+    @Operation(summary = "Create Person")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public PersonDTO createPerson(@RequestBody @Valid final PersonDTO personDTO) throws PersonAlreadyCreatedException, AddressNotFoundException {
+        return personService.createPerson(personDTO);
+    }
+
     @Operation(summary = "Get All People")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -39,13 +46,6 @@ public class PersonController {
     @ResponseStatus(HttpStatus.OK)
     public PersonDTO getPersonByID(@PathVariable final Long personId) throws PersonNotFoundException {
         return personService.getPersonByID(personId);
-    }
-
-    @Operation(summary = "Create Person")
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public PersonDTO createPerson(@RequestBody @Valid final PersonDTO personDTO) throws PersonAlreadyCreatedException, AddressNotFoundException {
-        return personService.createPerson(personDTO);
     }
 
 }

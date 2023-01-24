@@ -26,7 +26,7 @@ import javax.persistence.CascadeType;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_address", nullable = false)
+    @Column(name = "id_address")
     private Long id;
     @Column(name = "logradouro",nullable = false, length = 250)
     private String logradouro;
@@ -36,7 +36,7 @@ public class Address {
     private Long number;
     @Column(name = "city_name",nullable = false, length = 50)
     private String city;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToOne
     @JoinColumn(name = "person_id", referencedColumnName = "id_person", nullable = false)
     private Person person;
 }
