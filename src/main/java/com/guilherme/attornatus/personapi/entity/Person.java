@@ -29,7 +29,7 @@ public class Person {
     private String name;
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
-    @CPF
+    //@CPF
     @Column(name = "cpf", nullable = false, unique = true)
     private String CPF;
     @Column(name = "address_id")
