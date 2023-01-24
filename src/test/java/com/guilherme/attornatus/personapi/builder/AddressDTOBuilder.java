@@ -1,7 +1,10 @@
 package com.guilherme.attornatus.personapi.builder;
 
 import com.guilherme.attornatus.personapi.dto.AddressDTO;
+import com.guilherme.attornatus.personapi.entity.Person;
 import lombok.Builder;
+
+import java.time.LocalDate;
 
 @Builder
 public class AddressDTOBuilder {
@@ -15,12 +18,20 @@ public class AddressDTOBuilder {
     private Long number = 190L;
     @Builder.Default
     private String city = "Blumenau - SC";
+    @Builder.Default
+    private Person person = new Person(
+            1L,
+            "Larissa Abraão",
+            LocalDate.of(2022,9,9),
+            "03171313030",
+            null);
 
     public AddressDTO toAddressDTO() {
         return new AddressDTO(id,
                 logradouro,
                 CEP,
                 number,
-                city);
+                city,
+                person);
     }
 }

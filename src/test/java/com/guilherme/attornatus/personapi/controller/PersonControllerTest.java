@@ -2,6 +2,7 @@ package com.guilherme.attornatus.personapi.controller;
 
 import com.guilherme.attornatus.personapi.builder.PersonDTOBuilder;
 import com.guilherme.attornatus.personapi.dto.PersonDTO;
+import com.guilherme.attornatus.personapi.exception.exceptions.AddressNotFoundException;
 import com.guilherme.attornatus.personapi.exception.exceptions.PersonNotFoundException;
 import com.guilherme.attornatus.personapi.service.PersonService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,9 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 public class PersonControllerTest {
-
     private static final String PERSON_API_URL_PATH = "/api/v1/person";
     private static final List DATE_VALIDATION = List.of(2022,9,9);
+    private static final Long INVALID_ADDRESS_ID = 10L;
 
     private MockMvc mockMvc;
     @Mock
@@ -46,7 +47,6 @@ public class PersonControllerTest {
                 .setViewResolvers((s, locale) -> new MappingJackson2JsonView())
                 .build();
     }
-
 
     @Test
     void whenPOSTIsCalledThenABeerIsCreated() throws Exception {
@@ -65,6 +65,22 @@ public class PersonControllerTest {
                 .andExpect(jsonPath("$.birthDate", is(DATE_VALIDATION)))
                 .andExpect(jsonPath("$.cpf", is(personDTO.getCPF())))
                 .andExpect(jsonPath("$.mainAddress", is(personDTO.getMainAddress())));
+    }
+
+    @Test
+    void whenPOSTIsCalledWithInvalidAddressIDThenNotFoundStatusIsReturned() throws Exception {
+        // given
+        PersonDTO personDTO = PersonDTOBuilder.builder().build().toPersonDTO();
+        personDTO.setMainAddress(INVALID_ADDRESS_ID);
+
+        //when
+        when(personService.createPerson(personDTO)).thenThrow(AddressNotFoundException.class);
+
+        // then
+        mockMvc.perform(MockMvcRequestBuilders.post(PERSON_API_URL_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(personDTO)))
+                .andExpect(status().isNotFound());
     }
 
     @Test

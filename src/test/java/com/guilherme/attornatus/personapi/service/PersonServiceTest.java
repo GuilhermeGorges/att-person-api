@@ -55,14 +55,14 @@ public class PersonServiceTest {
 
     @Test
     void whenAlreadyRegisteredPersonCPFThenAnExceptionShouldBeThrown() {
-        // given
+        //given
         PersonDTO expectedPersonDTO = PersonDTOBuilder.builder().build().toPersonDTO();
         Person duplicatedPerson = personMapper.toModel(expectedPersonDTO);
 
-        // when
+        //when
         when(personRepository.findByCPF(expectedPersonDTO.getCPF())).thenReturn(Optional.of(duplicatedPerson));
 
-        // then
+        //then
         assertThrows(PersonAlreadyCreatedException.class, () -> personService.createPerson(expectedPersonDTO));
     }
 

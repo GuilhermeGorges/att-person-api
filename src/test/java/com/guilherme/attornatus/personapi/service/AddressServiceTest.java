@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AddressServiceTest {
-    private static final long VALID_PERSON_ID = 1L;
+    private static final Long VALID_PERSON_ID = 1L;
     @Mock
     private AddressRepository addressRepository;
     @InjectMocks

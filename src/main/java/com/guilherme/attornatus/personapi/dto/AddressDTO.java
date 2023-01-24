@@ -1,11 +1,11 @@
 package com.guilherme.attornatus.personapi.dto;
 
+import com.guilherme.attornatus.personapi.entity.Person;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Max;
 
 @Data
 @Builder
@@ -17,4 +17,5 @@ public class AddressDTO {
     private String CEP;
     private Long number;
     private String city;
+    private Person person;
 }
