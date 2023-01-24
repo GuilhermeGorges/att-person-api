@@ -9,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AddressControllerTest {
     private static final long VALID_PERSON_ID = 1L;
 
@@ -47,14 +50,14 @@ public class AddressControllerTest {
 
     @Test
     void whenPOSTIsCalledThenAnAddressIsCreated() throws Exception {
-        // given
+        //given
         AddressDTO addressDTO = AddressDTOBuilder.builder().build().toAddressDTO();
 
         //when
         when(addressService.createAddress(addressDTO))
                 .thenReturn(addressDTO);
 
-        // then
+        //then
         mockMvc.perform(post(ADDRESS_API_URL_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(addressDTO)))
@@ -68,14 +71,14 @@ public class AddressControllerTest {
 
     @Test
     void whenGETListIsCalledWithValidPeopleIDThenListAddressesReturned() throws Exception {
-        // given
+        //given
         AddressDTO addressDTO = AddressDTOBuilder.builder().build().toAddressDTO();
 
         //when
         when(addressService.getAddressesByPersonId(VALID_PERSON_ID))
                 .thenReturn(Collections.singletonList(addressDTO));
 
-        // then
+        //then
         mockMvc.perform(MockMvcRequestBuilders.get(ADDRESS_API_URL_PATH + "/" + VALID_PERSON_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

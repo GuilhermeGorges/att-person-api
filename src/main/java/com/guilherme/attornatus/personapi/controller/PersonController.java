@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -46,6 +47,13 @@ public class PersonController {
     @ResponseStatus(HttpStatus.OK)
     public PersonDTO getPersonByID(@PathVariable final Long personId) throws PersonNotFoundException {
         return personService.getPersonByID(personId);
+    }
+
+    @Operation(summary = "Update Person")
+    @PutMapping(value = "/{personId}")
+    @ResponseStatus(HttpStatus.OK)
+    public PersonDTO updatePerson(@PathVariable final Long personId, @RequestBody @Valid final PersonDTO personDTO) throws PersonNotFoundException, AddressNotFoundException {
+        return personService.updatePerson(personId, personDTO);
     }
 
 }

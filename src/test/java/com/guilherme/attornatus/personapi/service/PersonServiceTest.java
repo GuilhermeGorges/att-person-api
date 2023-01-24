@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +31,9 @@ import static org.hamcrest.Matchers.*;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class PersonServiceTest {
+    private static final String ALTERNATIVE_PERSON_NAME = "Eleanor Mendonça";
+    private static final String ALTERNATIVE_CPF = "641.822.710-76";
+
     @Mock
     private PersonRepository personRepository;
     @InjectMocks
@@ -38,11 +42,11 @@ public class PersonServiceTest {
 
     @Test
     void whenPersonInformedThenItShouldBeCreated() throws PersonAlreadyCreatedException, AddressNotFoundException {
-        // given
+        //given
         PersonDTO expectedPersonDTO = PersonDTOBuilder.builder().build().toPersonDTO();
         Person expectedSavedPerson = personMapper.toModel(expectedPersonDTO);
 
-        // when
+        //when
         when(personRepository.findById(expectedPersonDTO.getId())).thenReturn(Optional.empty());
         when(personRepository.save(expectedSavedPerson)).thenReturn(expectedSavedPerson);
 
@@ -98,14 +102,14 @@ public class PersonServiceTest {
 
     @Test
     void whenValidPersonIDIsGivenThenReturnAPerson() throws PersonNotFoundException {
-        // given
+        //given
         PersonDTO expectedFoundPersonDTO = PersonDTOBuilder.builder().build().toPersonDTO();
         Person expectedFoundPerson = personMapper.toModel(expectedFoundPersonDTO);
 
-        // when
+        //when
         when(personRepository.findById(expectedFoundPerson.getId())).thenReturn(Optional.of(expectedFoundPerson));
 
-        // then
+        //then
         PersonDTO foundPersonDTO = personService.getPersonByID(expectedFoundPersonDTO.getId());
 
         assertThat(foundPersonDTO, is(equalTo(expectedFoundPersonDTO)));
@@ -113,13 +117,34 @@ public class PersonServiceTest {
 
     @Test
     void whenNotRegisteredPersonIdIsGivenThenThrowAnException() {
-        // given
+        //given
         PersonDTO expectedFoundPersonDTO = PersonDTOBuilder.builder().build().toPersonDTO();
 
-        // when
+        //when
         when(personRepository.findById(expectedFoundPersonDTO.getId())).thenReturn(Optional.empty());
 
-        // then
+        //then
         assertThrows(PersonNotFoundException.class, () -> personService.getPersonByID(expectedFoundPersonDTO.getId()));
     }
+
+    @Test
+    void whenPersonInformedThenItShouldBeUpdated() throws AddressNotFoundException, PersonNotFoundException {
+        //given
+        PersonDTO expectedPersonDTO = PersonDTOBuilder.builder().build().toPersonDTO();
+        Person expectedUpdatedPerson = personMapper.toModel(expectedPersonDTO);
+
+        //when
+        when(personRepository.findById(expectedUpdatedPerson.getId())).thenReturn(Optional.of(expectedUpdatedPerson));
+        when(personRepository.save(expectedUpdatedPerson)).thenReturn(expectedUpdatedPerson);
+
+        //then
+        PersonDTO updatedPersonDTO = personService.updatePerson(expectedUpdatedPerson.getId(), expectedPersonDTO);
+
+        assertThat(updatedPersonDTO.getId(), is(equalTo(expectedPersonDTO.getId())));
+        assertThat(updatedPersonDTO.getName(), is(equalTo(expectedPersonDTO.getName())));
+        assertThat(updatedPersonDTO.getCPF(), is(equalTo(expectedPersonDTO.getCPF())));
+        assertThat(updatedPersonDTO.getMainAddress(), is(equalTo(expectedPersonDTO.getMainAddress())));
+        assertThat(updatedPersonDTO.getBirthDate(), is(equalTo(expectedPersonDTO.getBirthDate())));
+    }
+
 }

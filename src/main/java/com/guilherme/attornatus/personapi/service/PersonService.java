@@ -13,4 +13,6 @@ public interface PersonService {
     PersonDTO getPersonByID(final Long personId) throws PersonNotFoundException;
 
     PersonDTO createPerson(final PersonDTO personReqDTO) throws PersonAlreadyCreatedException, AddressNotFoundException;
+
+    PersonDTO updatePerson(final Long personId, final PersonDTO personDTO) throws PersonNotFoundException, AddressNotFoundException;
 }

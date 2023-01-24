@@ -5,7 +5,6 @@ import com.guilherme.attornatus.personapi.dto.AddressDTO;
 import com.guilherme.attornatus.personapi.entity.Address;
 import com.guilherme.attornatus.personapi.exception.exceptions.PersonNotFoundException;
 import com.guilherme.attornatus.personapi.mapper.AddressMapper;
-import com.guilherme.attornatus.personapi.mapper.PersonMapper;
 import com.guilherme.attornatus.personapi.repository.AddressRepository;
 import com.guilherme.attornatus.personapi.service.impl.AddressServiceImpl;
 import org.junit.jupiter.api.Test;

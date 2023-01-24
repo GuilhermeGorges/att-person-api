@@ -44,22 +44,41 @@ public class PersonServiceImpl implements PersonService {
     public PersonDTO createPerson(PersonDTO personDTO) throws PersonAlreadyCreatedException, AddressNotFoundException {
         personDTO.setCPF(OperationServer.formatData(personDTO.getCPF()));
         verifyIfPersonAlreadyExists(personDTO.getCPF());
-        Long mainAddressId = personDTO.getMainAddress();
-        if (mainAddressId != null) {
-            if (addressRepository.findById(mainAddressId).isEmpty()){
-                throw new AddressNotFoundException(mainAddressId);
-            }
-        }
+        validateAddress(personDTO.getMainAddress());
         Person person = personMapper.toModel(personDTO);
         Person savedPerson = personRepository.save(person);
         return personMapper.toDTO(savedPerson);
     }
 
-    private void verifyIfPersonAlreadyExists(String personCPF) throws PersonAlreadyCreatedException {
+    @Override
+    public PersonDTO updatePerson(final Long personId, final PersonDTO personDTO) throws PersonNotFoundException, AddressNotFoundException {
+        personRepository.findById(personId)
+                .orElseThrow(() -> new PersonNotFoundException(personId));
+        validateAddress(personDTO.getMainAddress());
+
+        if (personDTO.getId() == null) {
+            personDTO.setId(personId);
+        }
+
+        Person updatedPerson = personMapper.toModel(personDTO);
+        updatedPerson.setCPF(OperationServer.formatData(updatedPerson.getCPF()));
+        Person savedPerson = personRepository.save(updatedPerson);
+
+        return personMapper.toDTO(savedPerson);
+    }
+
+    private void verifyIfPersonAlreadyExists(final String personCPF) throws PersonAlreadyCreatedException {
         Optional<Person> optionalPerson = personRepository.findByCPF(personCPF);
         if (optionalPerson.isPresent()) {
             throw new PersonAlreadyCreatedException(personCPF);
         }
     }
 
+    private void validateAddress(Long mainAddressId) throws AddressNotFoundException {
+        if (mainAddressId != null) {
+            if (addressRepository.findById(mainAddressId).isEmpty()){
+                throw new AddressNotFoundException(mainAddressId);
+            }
+        }
+    }
 }
