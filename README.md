@@ -21,10 +21,17 @@
     - Número
     - Cidade
     
- ### Características:
+ ### Características
   - Respostas da API são em JSON
   - Banco de dados H2
   - Java 11
   - Spring Framework 2.7.8
   - Maven
   - Swagger UI
+
+ ### Como testar:
+    - Clone o repositório para algum diretório da sua máquina
+    - Abra o projeto utilizando o IntelijIDEA
+    - Após a sincronização das dependencias do maven rode a Classe PersonalApprication
+    - Teste os endpoints no link: 
+    localhost:8080/swagger-ui.html
