@@ -29,7 +29,7 @@
   - Maven
   - Swagger UI
 
- ### Como testar:
+ ### Como testar
     - Clone o repositório para algum diretório da sua máquina
     - Abra o projeto utilizando o IntelijIDEA
     - Após a sincronização das dependencias do maven rode a Classe PersonalApprication
